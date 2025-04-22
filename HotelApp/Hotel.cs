@@ -3,6 +3,14 @@ namespace HotelApp;
 public class Hotel
 {
     private readonly List<Reserva> reservas = new();
+    private readonly IReservaRepository? repositorio;
+
+    public Hotel() {}
+
+    public Hotel(IReservaRepository repositorio)
+    {
+        this.repositorio = repositorio;
+    }
 
     public void AgregarReserva(int Habitacion,DateTime Inicio, DateTime Fin)
     {
@@ -14,7 +22,9 @@ public class Hotel
        {
            throw new ArgumentException("El rango de fechas es inválido.");
        }
-       reservas.Add(new Reserva(Habitacion,Inicio,Fin));
+       var reserva = new Reserva(Habitacion, Inicio, Fin);
+       reservas.Add(reserva);
+         repositorio?.Guardar(reserva);
     }
 
     public bool EstaDisponible(int Habitacion, DateTime Inicio, DateTime Fin)
